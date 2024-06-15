@@ -10,7 +10,7 @@ class DataBase:
     __instance: DataBase = None
 
     # TODO it should be secured :)
-    API = "mongodb://nierelacyjne-bazy-danych:n1Vyz2NMj7tLU6poJNgHQd1bNbaty0pOSQi0BXUayQ5oKlrtLjFva8gmgUYDzhCvhA4Pi2uKfSBtACDbxCy7UQ==@nierelacyjne-bazy-danych.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@nierelacyjne-bazy-danych@"
+    API = os.getenv("MONGO_API")
 
     def __new__(cls, *args, **kwargs):
         if DataBase.__instance is None:
