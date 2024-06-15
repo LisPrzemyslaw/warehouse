@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS Package (
+        package_id int primary key,
+        package_volume float
+
+);
+CREATE TABLE IF NOT EXISTS Warehouse (
+        packages_id int primary key,
+        FOREIGN KEY (packages_id) REFERENCES  Package (package_id)
+);
+
+CREATE TABLE IF NOT EXISTS Box (
+        package_id int primary key,
+        height float,
+        width float,
+        depth float,
+        FOREIGN KEY (package_id) REFERENCES  Package (package_id)
+);
+CREATE TABLE IF NOT EXISTS Barrel (
+        package_id int primary key,
+        radius float,
+        height float,
+        FOREIGN KEY (package_id) REFERENCES  Package (package_id)
+);

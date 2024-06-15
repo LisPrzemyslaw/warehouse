@@ -1,0 +1,9 @@
+psycopg2
+pytest
+pytest_check
+PyMongo
+redis
+python-dotenv
+cassandra-driver
+kafka-python
+confluent-kafka
