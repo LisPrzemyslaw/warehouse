@@ -7,9 +7,6 @@ class Barrel(Package):
         super().__init__(id, math.pi * radius**2 * height)
         self.add_new_object(id, radius, height)
 
-        self.__radius: float
-        self.__height: float
-
     def add_new_object(self, id: int, radius: float, height: float):
         self._db_object.cursor.execute(f"""
                                             INSERT INTO barrel (package_id, radius, height) 
