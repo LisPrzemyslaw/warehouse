@@ -7,3 +7,4 @@ python-dotenv
 cassandra-driver
 kafka-python
 confluent-kafka
+flask
