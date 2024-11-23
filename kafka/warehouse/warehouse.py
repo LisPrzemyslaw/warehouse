@@ -1,17 +1,20 @@
+from kafka.databases.kafka_db import ProducerHandler
 from kafka.warehouse.package import Package
 from kafka.databases.mongo_bd import MongoDB
 
 
 class Warehouse:
-    def __init__(self, capacity):
+    def __init__(self, capacity, kafka_producer: ProducerHandler):
         self.collection = "warehouse"
         self.collection_package = "package"
         self.max_capacity: float = capacity
+        self.kafka_producer = kafka_producer
 
     def put(self, package: Package):
         if self.get_current_capacity() - package.capacity() < 0:
             raise ValueError("Package not fitted into storage!")
         MongoDB().insert(self.collection, {"package_id": package.package_id})
+        self.kafka_producer.send({"id": package.package_id, "Message": "Package has been put into storage"})
 
     def take_out(self, id) -> bool:
         try:
@@ -20,6 +23,8 @@ class Warehouse:
             print("Did not taken out")
             return False
         print(f"Package with id {id} has been taken out")
+        self.kafka_producer.send({"id": id, "Message": "Package has been taken out"})
+
         return True
 
     def get_number_of_items_in_storage(self) -> int:

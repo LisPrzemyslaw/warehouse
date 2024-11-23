@@ -19,6 +19,9 @@ class Test:
     CUSTOMER_1 = "customer_1"
     CUSTOMER_2 = "customer_2"
 
+    #####################
+    # KAFKA UNIT TESTS
+    #####################
     def test_created_object(self):
         producer = ProducerHandler(Test.HOST_3)
         consumer_1 = ConsumerHandler(Test.HOST_1, Test.CUSTOMER_1)
@@ -64,8 +67,9 @@ class Test:
     def test_receive_messages(self):
         # setup
         WAREHOUSE_CAPACITY = 500
+        producer = ProducerHandler(Test.HOST_3)
         box = Box(2342, 1, 2, 3)
-        storage = Warehouse(WAREHOUSE_CAPACITY)
+        storage = Warehouse(WAREHOUSE_CAPACITY, producer)
         storage.put(box)
         assert storage.get_current_capacity() == WAREHOUSE_CAPACITY - box.capacity()
         producer = ProducerHandler(Test.HOST_3)
@@ -86,12 +90,27 @@ class Test:
         assert storage.take_out(customer_1_id) is False  # returns false if not taken
 
     #####################
+    # INTEGRATION TESTS
+    #####################
+
+    def test_integration(self):
+        producer = ProducerHandler(Test.HOST_3)
+        consumer = ConsumerHandler(Test.HOST_1, Test.CUSTOMER_1)
+
+        warehouse = Warehouse(500, producer)
+        box = Box(2342, 1, 2, 3)
+        warehouse.put(box)
+        assert consumer.receive_data() == 2342
+
+    #####################
     # UNIT TESTS
     #####################
+
     def test_select_all(self):
         assert MongoDB().database.list_collection_names() is not None
 
     def test_create(self):
+        producer = ProducerHandler(Test.HOST_3)
         box = Box(2342, 1, 2, 3)
         with check: assert box.id == 2342
         with check: assert box.height == 1
@@ -103,7 +122,7 @@ class Test:
         with check: assert barrel.radius == 4
         with check: assert barrel.height == 5
 
-        storage = Warehouse(400)
+        storage = Warehouse(400, producer)
         with check: assert storage.get_current_capacity() == 400
 
     def test_read(self):
@@ -135,9 +154,11 @@ class Test:
         with check: assert barrel.capacity() == math.pi * 4 ** 2 * 5
 
     def test_store_items(self):
+        producer = ProducerHandler(Test.HOST_3)
+
         box = Box(2342, 1, 2, 3)
         barrel = Barrel(9391, 4, 5)
-        storage = Warehouse(30)
+        storage = Warehouse(30, producer)
 
         with check: assert storage.get_current_capacity() == 30
         storage.put(box)
