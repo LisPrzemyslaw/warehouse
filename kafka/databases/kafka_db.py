@@ -3,7 +3,7 @@ import json
 from confluent_kafka.admin import AdminClient, NewTopic
 from confluent_kafka import Consumer, Producer
 
-TOPIC = "wearhouse"
+TOPIC = "warehouse"
 
 
 class TopicCreator:
@@ -11,7 +11,7 @@ class TopicCreator:
         self._admin_client = AdminClient({'bootstrap.servers': 'localhost:19092'})
         self.create_topic(topic)
 
-    def create_topic(self, topic='wearhouse'):
+    def create_topic(self, topic=TOPIC):
         kafka_topic = NewTopic(topic, num_partitions=3, replication_factor=1)
         self._admin_client.create_topics([kafka_topic])
 
